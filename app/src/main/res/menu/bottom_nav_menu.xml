@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@android:drawable/ic_menu_compass"
+        android:title="Home" />
+    <item
+        android:id="@+id/nav_films"
+        android:icon="@android:drawable/ic_menu_gallery"
+        android:title="Films" />
+    <item
+        android:id="@+id/nav_tv"
+        android:icon="@android:drawable/ic_menu_slideshow"
+        android:title="TV Series" />
+    <item
+        android:id="@+id/nav_look"
+        android:icon="@android:drawable/ic_menu_view"
+        android:title="Look" />
+    <item
+        android:id="@+id/nav_search"
+        android:icon="@android:drawable/ic_menu_search"
+        android:title="Search" />
+</menu>
