@@ -12,31 +12,30 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CircleCrop
 import com.example.appmovies.R
 
-class SoonMovieAdapter(
+class ListMovieAdapter(
     private val movies: List<Movie>,
     private val onItemClick: (Movie) -> Unit
-) : RecyclerView.Adapter<SoonMovieAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<ListMovieAdapter.ViewHolder>() {
 
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val imagePoster: ImageView = view.findViewById(R.id.imagePoster)
-        val textTitle: TextView = view.findViewById(R.id.textTitle)
-        val textSubtitle: TextView = view.findViewById(R.id.textSubtitle)
+        val imageMoviePoster: ImageView = view.findViewById(R.id.imageMoviePoster)
+        val textMovieTitle: TextView = view.findViewById(R.id.textMovieTitle)
+        val textMovieSubtitle: TextView = view.findViewById(R.id.textMovieSubtitle)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_soon_movie, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val movie = movies[position]
-        holder.textTitle.text = movie.title
-        holder.textSubtitle.text = movie.subtitle
+        holder.textMovieTitle.text = movie.title
+        holder.textMovieSubtitle.text = movie.subtitle
 
-        Glide.with(holder.imagePoster.context)
+        Glide.with(holder.imageMoviePoster.context)
             .load(movie.imageUrl)
-            .transform(CircleCrop())
-            .into(holder.imagePoster)
+            .into(holder.imageMoviePoster)
 
         holder.itemView.setOnClickListener {
             onItemClick(movie)

@@ -1,13 +1,12 @@
 package com.example.moviesapp
 
-import kotlinx.parcelize.Parcelize
 import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Movie(
+data class Actor(
     val id: Int,
-    val title: String,
-    val subtitle: String,
+    val name: String,
+    val movieCount: Int,
     val imageUrl: String
 ) : Parcelable
-

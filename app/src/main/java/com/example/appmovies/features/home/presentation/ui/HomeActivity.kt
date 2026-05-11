@@ -3,17 +3,13 @@ package com.example.appmovies.features.home.presentation.ui
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import androidx.fragment.app.Fragment
 import com.example.appmovies.R
-import com.example.appmovies.features.home.presentation.adapter.SoonMovieAdapter
-import com.example.moviesapp.Movie
-import com.bumptech.glide.Glide
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,42 +23,44 @@ class HomeActivity : AppCompatActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.home)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(0, systemBars.top, 0, systemBars.bottom)
+            v.setPadding(0, systemBars.top, 0, 0) // Padding only top for status bar, bottom is handled by BottomNav
             insets
         }
 
-        setupViews()
-        setupRecyclerView()
+        setupBottomNavigation()
+        
+        // Default fragment
+        if (savedInstanceState == null) {
+            loadFragment(HomeFragment())
+        }
     }
 
-    private fun setupViews() {
-        val imageFeatured = findViewById<ImageView>(R.id.imageFeatured)
-        Glide.with(this)
-            .load("https://image.tmdb.org/t/p/original/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg")
-            .into(imageFeatured)
-
-        val imageAvatar = findViewById<ImageView>(R.id.imageAvatar)
-        Glide.with(this)
-            .load("https://i.pravatar.cc/150?u=linh")
-            .circleCrop()
-            .into(imageAvatar)
+    private fun setupBottomNavigation() {
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
+        bottomNav.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.nav_home -> {
+                    loadFragment(HomeFragment())
+                    true
+                }
+                R.id.nav_films -> {
+                    loadFragment(FilmsFragment())
+                    true
+                }
+                // Placeholders for other tabs
+                R.id.nav_tv, R.id.nav_look, R.id.nav_search -> {
+                    // For now, just show FilmsFragment as placeholder or a blank fragment
+                    loadFragment(FilmsFragment())
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
-    private fun setupRecyclerView() {
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerViewSoon)
-        recyclerView.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
-        val movies = listOf(
-            Movie(
-                1,
-                "Into the Spider-Verse 2",
-                "Released this Week",
-                "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg"
-            ),
-            Movie(2, "John Wick: Chapter 4", "Released this Week", "https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg"),
-            Movie(3, "Thor: Love and Thunder", "Released this Week", "https://image.tmdb.org/t/p/w500/pIkRyD18kl4FhoCNQuWxWu5c1El.jpg")
-        )
-        recyclerView.adapter = SoonMovieAdapter(movies)
+    private fun loadFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
     }
 }

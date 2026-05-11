@@ -11,6 +11,8 @@ navigationFragmentKtx = "2.9.8"
 navigationUiKtx = "2.9.8"
 glide = "4.16.0"
 
+kotlin = "2.3.21"
+
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -25,3 +27,6 @@ glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "gl
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-parcelize = { id = "org.jetbrains.kotlin.plugin.parcelize", version.ref = "kotlin" }
+
