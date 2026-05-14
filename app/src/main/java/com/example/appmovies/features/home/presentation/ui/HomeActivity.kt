@@ -47,10 +47,16 @@ class HomeActivity : AppCompatActivity() {
                     loadFragment(FilmsFragment())
                     true
                 }
-                // Placeholders for other tabs
-                R.id.nav_tv, R.id.nav_look, R.id.nav_search -> {
-                    // For now, just show FilmsFragment as placeholder or a blank fragment
-                    loadFragment(FilmsFragment())
+                R.id.nav_tv -> {
+                    loadFragment(TvSeriesFragment())
+                    true
+                }
+                R.id.nav_look -> {
+                    loadFragment(LookFragment())
+                    true
+                }
+                R.id.nav_search -> {
+                    loadFragment(SearchFragment())
                     true
                 }
                 else -> false

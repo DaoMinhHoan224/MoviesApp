@@ -10,4 +10,5 @@
     <color name="background_dark">#0F1014</color>
     <color name="primary_green">#4ADE80</color>
     <color name="text_secondary">#A0A0A0</color>
+    <color name="accent_red">#E50914</color>
 </resources>

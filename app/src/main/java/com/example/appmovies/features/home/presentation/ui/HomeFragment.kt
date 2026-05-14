@@ -11,17 +11,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.appmovies.R
+import androidx.lifecycle.lifecycleScope
+import com.example.appmovies.core.network.RetrofitClient
+import kotlinx.coroutines.launch
 import com.example.appmovies.features.home.presentation.adapter.SoonMovieAdapter
 import com.example.moviesapp.Movie
 
+import androidx.fragment.app.viewModels
+import com.example.appmovies.features.home.presentation.viewmodel.HomeViewModel
+
 class HomeFragment : Fragment() {
 
-    private val featuredMovie = Movie(
-        2,
-        "John Wick: Chapter 4",
-        "Released this Week",
-        "https://image.tmdb.org/t/p/original/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg"
-    )
+    private val viewModel: HomeViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,19 +35,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews(view)
-        setupRecyclerView(view)
+        observeViewModel(view)
     }
 
     private fun setupViews(view: View) {
-        val imageFeatured = view.findViewById<ImageView>(R.id.imageFeatured)
-        Glide.with(this)
-            .load(featuredMovie.imageUrl)
-            .into(imageFeatured)
-
-        imageFeatured.setOnClickListener {
-            navigateToDetail(featuredMovie)
-        }
-
         val imageAvatar = view.findViewById<ImageView>(R.id.imageAvatar)
         Glide.with(this)
             .load("https://i.pravatar.cc/150?u=linh")
@@ -54,33 +46,31 @@ class HomeFragment : Fragment() {
             .into(imageAvatar)
     }
 
-    private fun setupRecyclerView(view: View) {
-        // Soon Movies
+    private fun observeViewModel(view: View) {
         val recyclerViewSoon = view.findViewById<RecyclerView>(R.id.recyclerViewSoon)
-        recyclerViewSoon.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        recyclerViewSoon.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        
+        val recyclerViewPopular = view.findViewById<RecyclerView>(R.id.recyclerViewPopular)
+        recyclerViewPopular.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        
+        val imageFeatured = view.findViewById<ImageView>(R.id.imageFeatured)
 
-        val soonMovies = listOf(
-            Movie(1, "Into the Spider-Verse 2", "Released this Week", "https://image.tmdb.org/t/p/w500/8Vt6mWEReuy4Of61Lnj5Xj704m8.jpg"),
-            Movie(2, "John Wick: Chapter 4", "Released this Week", "https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg"),
-            Movie(3, "Thor: Love and Thunder", "Released this Week", "https://image.tmdb.org/t/p/w500/pIkRyD18kl4FhoCNQuWxWu5c1El.jpg")
-        )
-        recyclerViewSoon.adapter = SoonMovieAdapter(soonMovies) { movie ->
-            navigateToDetail(movie)
+        lifecycleScope.launch {
+            viewModel.nowPlayingMovies.collect { movies ->
+                recyclerViewSoon.adapter = SoonMovieAdapter(movies) { navigateToDetail(it) }
+                
+                if (movies.isNotEmpty()) {
+                    val featured = movies.first()
+                    Glide.with(this@HomeFragment).load(featured.imageUrl).into(imageFeatured)
+                    imageFeatured.setOnClickListener { navigateToDetail(featured) }
+                }
+            }
         }
 
-        // Popular Movies
-        val recyclerViewPopular = view.findViewById<RecyclerView>(R.id.recyclerViewPopular)
-        recyclerViewPopular.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-
-        val popularMovies = listOf(
-            Movie(4, "Avatar: The Way of Water", "Top Popular", "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmY1.jpg"),
-            Movie(5, "Puss in Boots: The Last Wish", "Top Popular", "https://image.tmdb.org/t/p/w500/kuf6Yak7IyHpxkoLQU3SnuHdnrM.jpg"),
-            Movie(6, "The Super Mario Bros. Movie", "Top Popular", "https://image.tmdb.org/t/p/w500/qNBAXBIQlnOzb6Uhw68B793S3oq.jpg")
-        )
-        recyclerViewPopular.adapter = SoonMovieAdapter(popularMovies) { movie ->
-            navigateToDetail(movie)
+        lifecycleScope.launch {
+            viewModel.popularMovies.collect { movies ->
+                recyclerViewPopular.adapter = SoonMovieAdapter(movies) { navigateToDetail(it) }
+            }
         }
     }
 
